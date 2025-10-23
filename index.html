@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Μεγάλο Παιχνίδι – Σταθμοί</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- 1) Κλάσεις στο <html> ΠΡΙΝ γίνει render το body -->
+  <script>
+    (function () {
+      var PASS = "amadryades2025"; // ← άλλαξέ το εδώ
+      var docEl = document.documentElement;
+      docEl.classList.add('js'); // δηλώνει ότι τρέχει JS
+      if (localStorage.getItem('game_pass') === PASS) {
+        docEl.classList.add('unlocked'); // ξεκλείδωτο από πριν
+      }
+      // Εκθέτουμε τον κωδικό σε μεταβλητή για το script στο τέλος
+      window.__GAME_PASS__ = PASS;
+    })();
+  </script>
+
+  <!-- 2) Κρίσιμο CSS (inline) για αποφυγή flash -->
+  <style>
+    /* Αν υπάρχει JS αλλά ΔΕΝ είμαστε unlocked → κρύψε το protected περιεχόμενο */
+    .js:not(.unlocked) #main-content { display: none; }
+    /* Όταν γίνουμε unlocked → δείξε κανονικά */
+    .js.unlocked #main-content { display: block; }
+    /* Όσο είμαστε κλειδωμένοι, κράτα απενεργοποιημένα τα links */
+    .js:not(.unlocked) nav a { pointer-events: none; opacity: .55; }
+    /* Basic styles για το lock screen */
+    :root { --accent:#2f855a; --muted:#64748b; --bg:#f3f7f5; }
+    html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif}
+    #lock-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+    .lock-box{width:100%;max-width:420px;background:#fff;border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(10,20,30,.08);text-align:center}
+    .lock-box h2{margin:0 0 8px;font-size:20px}
+    .lock-box p.info{color:var(--muted);margin:6px 0 12px;font-size:14px}
+    #passwordInput{width:100%;padding:12px 14px;font-size:16px;border:1px solid #e6eef0;border-radius:10px;box-sizing:border-box}
+    #unlockBtn{margin-top:12px;width:100%;padding:12px;font-weight:600;border-radius:10px;border:none;cursor:pointer;background:var(--accent);color:#fff}
+    #error{color:#d9534f;margin-top:10px;display:none}
+  </style>
+
+  <!-- 3) No-JS fallback: αν ο χρήστης έχει κλειστό JS, δείξε μήνυμα -->
+  <noscript>
+    <style>#main-content{display:none !important}</style>
+  </noscript>
+</head>
+<body>
+
+  <!-- LOCK SCREEN (θα κρυφτεί αυτόματα αν υπάρχει saved pass) -->
+  <div id="lock-screen" aria-hidden="true" style="display:none">
+    <div class="lock-box" role="dialog" aria-labelledby="lockTitle">
+      <h2 id="lockTitle">Εισαγωγή κωδικού</h2>
+      <p class="info">Πληκτρολόγησε τον κωδικό για να συνεχίσεις στο παιχνίδι.</p>
+      <input id="passwordInput" type="password" placeholder="Κωδικός" aria-label="Κωδικός" autocomplete="off">
+      <button id="unlockBtn" type="button">Είσοδος</button>
+      <div id="error" role="status">❌ Λάθος κωδικός — ξαναπροσπάθησε.</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT (protected) -->
+  <div id="main-content" class="container" aria-hidden="true">
+    <div class="header" style="display:flex;align-items:center;gap:10px;margin:8px 0 16px;">
+      <a href="index.html" style="font-weight:600">🌿 Μεγάλο Παιχνίδι</a>
+      <nav style="margin-left:auto;display:flex;gap:10px;font-size:14px;flex-wrap:wrap">
+        <a href="station-1.html">Απειλούμενα Ζώα</a>
+        <a href="station-2.html">Δημιουργίας</a>
+        <a href="station-3.html">Καλλιέργειας</a>
+        <a href="station-4.html">Ανακύκλωσης</a>
+      </nav>
+    </div>
+
+    <h1 class="page-title">Διάλεξε σταθμό</h1>
+
+    <div class="card">
+      <p>Σκάναρε το QR του σταθμού σου ή πάτησε τον τίτλο για να δεις τις οδηγίες στο κινητό.</p>
+      <ul>
+        <li><a href="station-1.html">Σταθμός 1: Η Αμαδρυάδα των Απειλούμενων Ζώων</a></li>
+        <li><a href="station-2.html">Σταθμός 2: Η Αμαδρυάδα της Δημιουργίας</a></li>
+        <li><a href="station-3.html">Σταθμός 3: Η Αμαδρυάδα της Καλλιέργειας</a></li>
+        <li><a href="station-4.html">Σταθμός 4: Η Αμαδρυάδα της Ανακύκλωσης</a></li>
+      </ul>
+      <p class="kicker">Φιλικό για κινητά • απλό • έτοιμο για QR</p>
+    </div>
+
+    <div class="footer" style="font-size:13px;color:#64748b;padding:24px 0;text-align:center">© Μεγάλο Παιχνίδι φύσης</div>
+  </div>
+
+  <!-- 4) Λογική ξεκλειδώματος στο ΤΕΛΟΣ (χωρίς flash) -->
+  <script>
+    (function(){
+      var CORRECT = window.__GAME_PASS__;
+      var docEl = document.documentElement;
+      var lockScreen = document.getElementById('lock-screen');
+      var mainContent = document.getElementById('main-content');
+      var pwdInput = document.getElementById('passwordInput');
+      var unlockBtn = document.getElementById('unlockBtn');
+      var errorEl = document.getElementById('error');
+
+      // Αν δεν είμαστε ήδη unlocked (από το head), δείξε lock screen
+      if (!docEl.classList.contains('unlocked')) {
+        lockScreen.style.display = 'flex';
+        lockScreen.setAttribute('aria-hidden','false');
+        mainContent.setAttribute('aria-hidden','true');
+      } else {
+        // ήδη unlocked → προχώρα
+        mainContent.setAttribute('aria-hidden','false');
+      }
+
+      function unlock(){
+        var val = (pwdInput.value || "").trim();
+        if (val === CORRECT) {
+          localStorage.setItem('game_pass', CORRECT);
+          docEl.classList.add('unlocked');            // ξεκλειδώνει CSS-ικά
+          lockScreen.style.display = 'none';
+          lockScreen.setAttribute('aria-hidden','true');
+          mainContent.setAttribute('aria-hidden','false');
+          window.scrollTo(0,0);
+        } else {
+          errorEl.style.display = 'block';
+          setTimeout(function(){ errorEl.style.display = 'none'; }, 2200);
+          pwdInput.focus();
+        }
+      }
+
+      unlockBtn.addEventListener('click', unlock);
+      pwdInput.addEventListener('keyup', function(e){ if (e.key === 'Enter') unlock(); });
+    })();
+  </script>
+</body>
+</html>
